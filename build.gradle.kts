@@ -1,9 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.google.protobuf.gradle.*
+
 plugins {
     id("org.springframework.boot") version "3.2.0"
     id("io.spring.dependency-management") version "1.1.4"
-    id ("com.google.protobuf") version "0.9.4"
+    id("com.google.protobuf") version "0.9.4"
     kotlin("plugin.noarg") version "1.5.30"
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.spring") version "1.9.20"
@@ -32,7 +33,7 @@ repositories {
 sourceSets {
     main {
         java {
-            srcDir("cooffee-rpc")
+            srcDir("src/main/generatedProto")
         }
     }
 }
@@ -41,8 +42,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation ("io.grpc:grpc-protobuf:${grpcVersion}")
-    implementation ("io.grpc:grpc-stub:${grpcVersion}")
+    implementation("io.grpc:grpc-protobuf:${grpcVersion}")
+    implementation("io.grpc:grpc-stub:${grpcVersion}")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
@@ -55,20 +56,14 @@ protobuf {
     }
 
     generateProtoTasks {
-        ofSourceSet("main").forEach {
-            task -> task.builtins {
+        ofSourceSet("main").forEach { task ->
+            task.builtins {
                 all().forEach {
                     it.plugins {
                         id("grpc")
                     }
                 }
-        }
-//        ofSourceSets("main".forEach {
-//            all().forEach {
-//                it.plugins {
-//                    id("grpc")
-//                }
-//            }
+            }
         }
         setGeneratedFilesBaseDir("$projectDir/src/generatedProto")
     }
